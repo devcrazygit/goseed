@@ -28,7 +28,7 @@ func Authentication() gin.HandlerFunc {
 			c.JSON(400, gin.H{"error": "Invalid token"})
 		}
 		tokenString := strings.TrimSpace(temp[1])
-		// fmt.Println(tokenString)
+		fmt.Println("tokenString is ", tokenString)
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			// 	return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

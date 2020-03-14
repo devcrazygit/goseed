@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"goseed/models/entity"
 	"goseed/models/service"
 	"log"
@@ -35,6 +36,7 @@ func (auth *AuthController) Login(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("user email is ", user.Email)
 	token, err := user.GetJwtToken()
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -52,6 +54,7 @@ func (auth *AuthController) Profile(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"user_name": user.Name,
+		"email":     user.Email,
 	})
 }
 
