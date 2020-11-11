@@ -7,7 +7,7 @@ import (
 
 func main() {
 	router := routers.InitRoute()
-	port := utils.EnvVar("SERVER_PORT")
+	port := utils.EnvVar("SERVER_PORT", ":8080")
 	// fmt.Println(port)
 	router.Run(port)
 }

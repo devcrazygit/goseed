@@ -20,12 +20,15 @@ func Authentication() gin.HandlerFunc {
 			c.JSON(400, gin.H{
 				"error": "Authentication header is missing",
 			})
+			c.Abort()
 			return
 		}
 		temp := strings.Split(authHeader, "Bearer")
 		// fmt.Println("token lenght is ", len(temp))
 		if len(temp) < 2 {
 			c.JSON(400, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
 		}
 		tokenString := strings.TrimSpace(temp[1])
 		fmt.Println("tokenString is ", tokenString)
@@ -33,7 +36,7 @@ func Authentication() gin.HandlerFunc {
 			// if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			// 	return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 			// }
-			secretKey := utils.EnvVar("TOKEN_KEY")
+			secretKey := utils.EnvVar("TOKEN_KEY", "")
 			return []byte(secretKey), nil
 		})
 
@@ -41,6 +44,7 @@ func Authentication() gin.HandlerFunc {
 			c.JSON(401, gin.H{
 				"error": err.Error(),
 			})
+			c.Abort()
 			return
 		}
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -52,6 +56,7 @@ func Authentication() gin.HandlerFunc {
 				c.JSON(402, gin.H{
 					"error": "User not found",
 				})
+				c.Abort()
 				return
 			}
 			c.Set("user", user)
@@ -60,6 +65,8 @@ func Authentication() gin.HandlerFunc {
 			c.JSON(400, gin.H{
 				"error": "Token is not valid",
 			})
+			c.Abort()
+			return
 		}
 	}
 }
