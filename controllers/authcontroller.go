@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"goseed/models/entity"
 	"goseed/models/service"
 	"log"
@@ -36,7 +35,6 @@ func (auth *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("user email is ", user.Email)
 	token, err := user.GetJwtToken()
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{"error": err.Error()})

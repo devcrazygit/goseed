@@ -8,7 +8,6 @@ import (
 
 //EnvVar function is for read .env file
 func EnvVar(key string, defaultVal string) string {
-	// fmt.Println("EnvVar called")
 	godotenv.Load(".env")
 	value := os.Getenv(key)
 	if len(value) == 0 {

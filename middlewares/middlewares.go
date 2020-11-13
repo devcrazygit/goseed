@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -23,13 +22,11 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 		temp := strings.Split(authHeader, "Bearer")
-		// fmt.Println("token lenght is ", len(temp))
 		if len(temp) < 2 {
 			c.AbortWithStatusJSON(400, gin.H{"error": "Invalid token"})
 			return
 		}
 		tokenString := strings.TrimSpace(temp[1])
-		fmt.Println("tokenString is ", tokenString)
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			// 	return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -46,7 +43,6 @@ func Authentication() gin.HandlerFunc {
 		}
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			email := claims["email"].(string)
-			fmt.Println("email is ", email)
 			userservice := service.Userservice{}
 			user, err := userservice.FindByEmail(email)
 			if err != nil {

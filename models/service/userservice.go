@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"goseed/models/db"
 	"goseed/models/entity"
 
@@ -20,7 +19,6 @@ func (userservice Userservice) Create(user *(entity.User)) error {
 
 	doc := mogo.NewDoc(entity.User{}).(*(entity.User))
 	err := doc.FindOne(bson.M{"email": user.Email}, doc)
-	fmt.Println("pre item is ", doc)
 	if err == nil {
 		return errors.New("Already Exist")
 	}
@@ -29,6 +27,15 @@ func (userservice Userservice) Create(user *(entity.User)) error {
 	if vErr, ok := err.(*mogo.ValidationError); ok {
 		return vErr
 	}
+	return err
+}
+
+// Delete a user from DB
+func (userservice Userservice) Delete(email string) error {
+	user, _ := userservice.FindByEmail(email)
+	conn := db.GetConnection()
+	defer conn.Session.Close()
+	err := user.Remove()
 	return err
 }
 
