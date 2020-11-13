@@ -29,7 +29,7 @@ func (user *User) GetJwtToken() (string, error) {
 	})
 	log.Println(token)
 
-	secretKey := utils.EnvVar("TOKEN_KEY")
+	secretKey := utils.EnvVar("TOKEN_KEY", "")
 	log.Println(secretKey)
 	tokenString, err := token.SignedString([]byte(secretKey))
 	log.Println(tokenString, err)
