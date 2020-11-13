@@ -19,27 +19,27 @@ func (auth *AuthController) Login(c *gin.Context) {
 
 	var loginInfo entity.User
 	if err := c.ShouldBindJSON(&loginInfo); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	//TODO
 	userservice := service.Userservice{}
 	user, errf := userservice.Find(&loginInfo)
 	if errf != nil {
-		c.JSON(401, gin.H{"error": "Not found"})
+		c.AbortWithStatusJSON(401, gin.H{"error": "Not found"})
 		return
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginInfo.Password))
 	if err != nil {
-		c.JSON(402, gin.H{"error": "Email or password is invalid."})
+		c.AbortWithStatusJSON(402, gin.H{"error": "Email or password is invalid."})
 		return
 	}
 
 	fmt.Println("user email is ", user.Email)
 	token, err := user.GetJwtToken()
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 	//-------
@@ -68,7 +68,7 @@ func (auth *AuthController) Signup(c *gin.Context) {
 	}
 	var info signupInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(401, gin.H{"error": "Please input all fields"})
+		c.AbortWithStatusJSON(401, gin.H{"error": "Please input all fields"})
 		return
 	}
 	user := entity.User{}
@@ -84,7 +84,7 @@ func (auth *AuthController) Signup(c *gin.Context) {
 	userservice := service.Userservice{}
 	err = userservice.Create(&user)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(200, gin.H{"result": "ok"})
 	}

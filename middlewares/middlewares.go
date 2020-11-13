@@ -17,17 +17,15 @@ func Authentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.Request.Header.Get("Authentication")
 		if len(authHeader) == 0 {
-			c.JSON(400, gin.H{
+			c.AbortWithStatusJSON(400, gin.H{
 				"error": "Authentication header is missing",
 			})
-			c.Abort()
 			return
 		}
 		temp := strings.Split(authHeader, "Bearer")
 		// fmt.Println("token lenght is ", len(temp))
 		if len(temp) < 2 {
-			c.JSON(400, gin.H{"error": "Invalid token"})
-			c.Abort()
+			c.AbortWithStatusJSON(400, gin.H{"error": "Invalid token"})
 			return
 		}
 		tokenString := strings.TrimSpace(temp[1])
@@ -41,10 +39,9 @@ func Authentication() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			c.JSON(401, gin.H{
+			c.AbortWithStatusJSON(401, gin.H{
 				"error": err.Error(),
 			})
-			c.Abort()
 			return
 		}
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -53,19 +50,17 @@ func Authentication() gin.HandlerFunc {
 			userservice := service.Userservice{}
 			user, err := userservice.FindByEmail(email)
 			if err != nil {
-				c.JSON(402, gin.H{
+				c.AbortWithStatusJSON(402, gin.H{
 					"error": "User not found",
 				})
-				c.Abort()
 				return
 			}
 			c.Set("user", user)
 			c.Next()
 		} else {
-			c.JSON(400, gin.H{
+			c.AbortWithStatusJSON(400, gin.H{
 				"error": "Token is not valid",
 			})
-			c.Abort()
 			return
 		}
 	}
@@ -75,7 +70,7 @@ func Authentication() gin.HandlerFunc {
 func ErrorHandler(c *gin.Context) {
 	c.Next()
 	if len(c.Errors) > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"errors": c.Errors,
 		})
 	}
