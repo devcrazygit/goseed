@@ -1,9 +1,7 @@
 package entity
 
 import (
-	"fmt"
 	"goseed/utils"
-	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -23,16 +21,11 @@ type User struct {
 
 //GetJwtToken returns jwt token with user email claims
 func (user *User) GetJwtToken() (string, error) {
-	fmt.Println("jwt token email is : ", user.Email)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": string(user.Email),
 	})
-	log.Println(token)
-
 	secretKey := utils.EnvVar("TOKEN_KEY", "")
-	log.Println(secretKey)
 	tokenString, err := token.SignedString([]byte(secretKey))
-	log.Println(tokenString, err)
 	return tokenString, err
 }
 
