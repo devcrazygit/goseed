@@ -84,7 +84,6 @@ c.JSON(http.StatusBadRequest, gin.H{
 
 “Authentication” function in middlewares package deals with JWT. It checks token and get user information. If not, it rejects request.
 
-Further information can be found [here](https://medium.com/@devcrazy/golang-gin-jwt-mogo-mongodb-orm-golang-authentication-example-52c3c1189488?sk=9169b794339b8aab56de9b99ec45b3ff)
 ## License
 
 The Goseed project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
